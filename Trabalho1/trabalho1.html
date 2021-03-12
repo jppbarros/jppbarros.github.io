@@ -1,0 +1,1797 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <script id="shader-vs" type="x-shader/x-vertex">
+            attribute vec3 aVertexPosition;
+            attribute vec4 aVertexColor;
+            uniform mat4 uMMatrix;
+            uniform mat4 uVMatrix;
+            uniform mat4 uPMatrix;
+            varying vec4 vColor;
+            void main(void)
+            {
+            gl_Position = uPMatrix * uVMatrix * uMMatrix * vec4(aVertexPosition, 1.0);
+            vColor = aVertexColor;
+            }
+        </script>
+    <script id="shader-fs" type="x-shader/x-fragment">
+            precision mediump float;
+            varying vec4 vColor;
+            void main(void)
+            {
+            gl_FragColor = vColor;
+            }
+        </script>
+    <script type="text/javascript" src="gl-matrix-2.4.0.js"></script>
+    <script type="text/javascript" src="jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="webgl-utils.js"></script>
+
+    <script type="text/javascript">
+        // Iniciar o ambiente quando a página for
+        // carregada
+        var gl;
+        var shaderProgram;
+
+        var triangleVertexPositionBuffer;
+        var triangleVertexPositionBuffer2;
+        var triangleVertexPositionBuffer3;
+        var triangleVertexPositionBuffer4;
+        var triangleVertexPositionBuffer5;
+        var triangleVertexPOsitionBuffer6;
+        var squareVertexPositionBuffer;
+        var squareVertexPositionBuffer2;
+        var squareVertexPositionBuffer3;
+        var squareVertexPositionBuffer4;
+        var squareVertexPositionBuffer5;
+        var squareVertexPositionBuffer6;
+        var squareVertexPositionBuffer7;
+        var squareVertexPositionBuffer8;
+        var squareVertexPositionBuffer9;
+        var squareVertexPositionBuffer10;
+        var squareVertexPositionBuffer11;
+        var squareVertexPositionBuffer12;
+        var squareVertexPositionBuffer13;
+        var squareVertexPositionBuffer14;
+        var squareVertexPositionBuffer15;
+        var squareVertexPositionBuffer16;
+        var squareVertexPositionBuffer17;
+        var squareVertexPositionBuffer18;
+        var squareVertexPositionBuffer19;
+        var squareVertexPositionBuffer20;
+        var squareVertexPositionBuffer21;
+        var squareVertexPositionBuffer22;
+    
+
+        var triangleVertexColorBuffer;
+        var triangleVertexColorBuffer2;
+        var triangleVertexColorBuffer3;
+        var triangleVertexColorBuffer4;
+        var triangleVertexColorBuffer5;
+        var triangleVertexColorBuffer6;
+        var squareVertexColorBuffer;
+        var squareVertexColorBuffer2;
+        var squareVertexColorBuffer3;
+        var squareVertexColorBuffer4;
+        var squareVertexColorBuffer5;
+        var squareVertexColorBuffer6;
+        var squareVertexColorBuffer7;
+        var squareVertexColorBuffer8;
+        var squareVertexColorBuffer9;
+        var squareVertexColorBuffer10;
+        var squareVertexColorBuffer11;
+        var squareVertexColorBuffer12;
+        var squareVertexColorBuffer13;
+        var squareVertexColorBuffer14;
+        var squareVertexColorBuffer15;
+        var squareVertexColorBuffer16;
+        var squareVertexColorBuffer17;
+        var squareVertexColorBuffer18;
+        var squareVertexColorBuffer19;
+        var squareVertexColorBuffer20;
+        var squareVertexColorBuffer21;
+        var squareVertexColorBuffer22;
+        
+
+        var triangleVertexIndex;
+        var triangleVertexIndex2;
+        var triangleVertexIndex3;
+        var triangleVertexIndex4;
+        var triangleVertexIndex5;
+        var triangleVertexIndex6;
+
+        var squareVertexIndex;
+        var squareVertexIndex2;
+        var squareVertexIndex3;
+        var squareVertexIndex4;
+        var squareVertexIndex5;
+        var squareVertexIndex6;
+        var squareVertexIndex7;
+        var squareVertexIndex8;
+        var squareVertexIndex9;
+        var squareVertexIndex10;
+        var squareVertexIndex11;
+        var squareVertexIndex12;
+        var squareVertexIndex13;
+        var squareVertexIndex14;
+        var squareVertexIndex15;
+        var squareVertexIndex16;
+        var squareVertexIndex17;
+        var squareVertexIndex18;
+        var squareVertexIndex19;
+        var squareVertexIndex20;
+        var squareVertexIndex21;
+        var squareVertexIndex22;
+        
+        
+
+        var rTriangle = 0;
+        var rTriangle2 = 0;
+        var rTriangle3 = 0;
+        var rTriangle4 = 0;
+        var rTriangle5 = 0;
+        var rTriangle6 = 0;
+        var rSquare = 0;
+        var rSquare2 = 0;
+        var rSquare3 = 0;
+        var rSquare4 = 0;
+        var rSquare5 = 0;
+        var rSquare6 = 0;
+        var rSquare7 = 0;
+        var rSquare8 = 0;
+        var rSquare9 = 0;
+        var rSquare10 = 0;
+        var rSquare11 = 0;
+        var rSquare12 = 0;
+        var rSquare13 = 0;
+        var rSquare14 = 0;
+        var rSquare15 = 0;
+        var rSquare16= 0;
+        var rSquare17 = 0;
+        var rSquare18 = 0;
+        var rSquare19 = 0;
+        var rSquare20 = 0;
+        var rSquare21 = 0;
+        var rSquare22 = 0;
+        
+    
+
+        var mMatrix = mat4.create();
+        var vMatrix = mat4.create();
+        var pMatrix = mat4.create();
+
+        var mMatrixPilha = [];
+
+        function mPushMatrix() {
+            var copy = mat4.clone(mMatrix);
+            mMatrixPilha.push(copy);
+        }
+
+        function mPopMatrix() {
+            if (mMatrixPilha.length == 0) {
+                throw "inválido popMatrix!";
+            }
+            mMatrix = mMatrixPilha.pop();
+        }
+
+        function degToRad(graus) {
+            return graus * Math.PI / 360;
+        }
+
+        $(function () {
+            iniciaWebGL();
+        });
+
+        function iniciaWebGL() {
+            var canvas = $('#canvas-webgl')[0];
+            iniciarGL(canvas); // Definir como um canvas 3D
+            iniciarShaders();  // Obter e processar os Shaders
+            iniciarBuffers();  // Enviar o triângulo e quadrado na GPU
+            iniciarAmbiente(); // Definir background e cor do objeto
+            tick();            // Desenhar a cena repetidamente
+        }
+
+        function tick() {
+            requestAnimFrame(tick);
+            desenharCena();
+            animar();
+        }
+
+        function iniciarGL(canvas) {
+            try {
+                gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+                gl.viewportWidth = canvas.width;
+                gl.viewportHeight = canvas.height;
+            }
+            catch (e) {
+                if (!gl)
+                    alert("Não pode inicializar WebGL, desculpe");
+            }
+        }
+
+
+        function iniciarShaders() {
+            var vertexShader = getShader(gl, "#shader-vs");
+            var fragmentShader = getShader(gl, "#shader-fs");
+
+            shaderProgram = gl.createProgram();
+            gl.attachShader(shaderProgram, vertexShader);
+            gl.attachShader(shaderProgram, fragmentShader);
+            gl.linkProgram(shaderProgram);
+
+            if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+                alert("Não pode inicializar shaders");
+            }
+
+            gl.useProgram(shaderProgram);
+            shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
+            gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+
+            shaderProgram.vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
+            gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
+
+            shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram,
+                "uPMatrix");
+            shaderProgram.vMatrixUniform = gl.getUniformLocation(shaderProgram,
+                "uVMatrix");
+            shaderProgram.mMatrixUniform = gl.getUniformLocation(shaderProgram,
+                "uMMatrix");
+        }
+
+
+        function getShader(gl, id) {
+            var shaderScript = $(id)[0];
+            if (!shaderScript) {
+                return null;
+            }
+            var str = "";
+            var k = shaderScript.firstChild;
+            while (k) {
+                if (k.nodeType == 3)
+                    str += k.textContent;
+                k = k.nextSibling;
+            }
+            var shader;
+            if (shaderScript.type == "x-shader/x-fragment") {
+                shader = gl.createShader(gl.FRAGMENT_SHADER);
+            }
+            else if (shaderScript.type == "x-shader/x-vertex") {
+                shader = gl.createShader(gl.VERTEX_SHADER);
+            }
+            else {
+                return null;
+            }
+            gl.shaderSource(shader, str);
+            gl.compileShader(shader);
+            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                alert(gl.getShaderInfoLog(shader));
+                return null;
+            }
+            return shader;
+        }
+
+
+        function iniciarBuffers() {
+            triangleVertexPositionBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer);
+            //segundo triangilo
+            var vertices = [
+                //Frente
+                -1.0, 2.2, -1,
+                -0, 2.2, -1, //vertice da direita baixo
+                -0.25, 2.35, 0.2, //vertice de cima 
+
+              /*  //Direita
+                0.0, 1.171735, 0.0,
+                0.0, 1.171735, 0.2,
+                0.2, 1.371735, 0.1,
+
+                //Trás
+                0.0, 1.571735, 0.2,
+                0.0, 1.171735, 0.2,
+                0.2, 1.371735, 0.1,
+
+                //Esquerda
+                0.0, 1.571735, 0.0,
+                0.0, 1.571735, 0.2,
+                0.2, 1.371735, 0.1*/
+            ];
+
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            triangleVertexPositionBuffer.itemSize = 3;
+            triangleVertexPositionBuffer.numItems = 12;
+
+            triangleVertexColorBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexColorBuffer);
+            var cores = [
+                0.5, 0.5, 0.5, 1.0,
+                0.5, 0.5, 0.5, 1.0,
+                0.5, 0.5, 0.5, 1.0,
+
+                0.29, 0.0, 0.5, 1.0,
+                0.29, 0.0, 0.5, 1.0,
+                0.29, 0.0, 0.5, 1.0,
+
+                0.29, 0.0, 0.5, 1.0,
+                0.29, 0.0, 0.5, 1.0,
+                0.29, 0.0, 0.5, 1.0,
+
+                0.29, 0.0, 0.5, 1.0,
+                0.29, 0.0, 0.5, 1.0,
+                0.29, 0.0, 0.5, 1.0
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cores), gl.STATIC_DRAW);
+            triangleVertexColorBuffer.itemSize = 4;
+            triangleVertexColorBuffer.numItems = 12;
+
+            triangleVertexPositionBuffer2 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer2);
+
+            //terceiro triangulo
+            var vertices = [
+                //Frente
+                0.13, 1.62, -1, //vertice da esquerda
+                1.13, 1.62, -1, //vertice da direita baixo
+                0.57, 1.95, 0.2, //vertice de cima 
+
+
+               /* //Direita
+                0.4, 1.171735, 0.0,
+                0.4, 1.171735, 0.2,
+                0.2, 1.371735, 0.1,
+
+                //Trás
+                0.4, 1.571735, 0.2,
+                0.4, 1.171735, 0.2,
+                0.2, 1.371735, 0.1,
+
+                //Esquerda
+                0.4, 1.571735, 0.0,
+                0.4, 1.571735, 0.2,
+                0.2, 1.371735, 0.1*/
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            triangleVertexPositionBuffer2.itemSize = 3;
+            triangleVertexPositionBuffer2.numItems = 12;
+            triangleVertexColorBuffer2 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexColorBuffer2);
+            var cores = [
+                0.5, 0.5, 0.5, 1.0,
+                0.5, 0.5, 0.5, 1.0,
+                0.5, 0.5, 0.5, 1.0,
+
+                1.0, 0.07, 0.57, 1.0,
+                1.0, 0.07, 0.57, 1.0,
+                1.0, 0.07, 0.57, 1.0,
+
+                1.0, 0.07, 0.57, 1.0,
+                1.0, 0.07, 0.57, 1.0,
+                1.0, 0.07, 0.57, 1.0,
+
+                1.0, 0.07, 0.57, 1.0,
+                1.0, 0.07, 0.57, 1.0,
+                1.0, 0.07, 0.57, 1.0
+
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cores), gl.STATIC_DRAW);
+            triangleVertexColorBuffer2.itemSize = 4;
+            triangleVertexColorBuffer2.numItems = 12;
+
+            triangleVertexPositionBuffer3 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer3);
+            //Quarto Triangulo
+            var vertices = [
+                1.23, 2.2, -1, //vertice da esquerda
+                2.26, 2.2, -1, //vertice da direita baixo
+                1.45, 2.35, 0.2, //vertice de cima 
+
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            triangleVertexPositionBuffer3.itemSize = 3;
+            triangleVertexPositionBuffer3.numItems = 3;
+            triangleVertexColorBuffer3 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexColorBuffer3);
+            var cores = [
+                0.5, 0.5, 0.5, 1.0,
+                0.5, 0.5, 0.5, 1.0,
+                0.5, 0.5, 0.5, 1.0
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cores), gl.STATIC_DRAW);
+            triangleVertexColorBuffer3.itemSize = 4;
+            triangleVertexColorBuffer3.numItems = 3;
+
+            triangleVertexPositionBuffer4 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer4);
+            //Corpo azul claro 4
+            var vertices = [
+                0.348034, 1.119769, 0.0,
+                0.819677, 0.646522, 0.0,
+                0.348034, 0.176476, 0.0
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            triangleVertexPositionBuffer4.itemSize = 3;
+            triangleVertexPositionBuffer4.numItems = 3;
+            triangleVertexColorBuffer4 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexColorBuffer4);
+            var cores = [
+                0.0, 0.74, 0.99, 1.0,
+                0.0, 0.74, 0.99, 1.0,
+                0.0, 0.74, 0.99, 1.0
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cores), gl.STATIC_DRAW);
+            triangleVertexColorBuffer4.itemSize = 4;
+            triangleVertexColorBuffer4.numItems = 3;
+
+            triangleVertexPositionBuffer5 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer5);
+            //Pe azul escuro 5
+            var vertices = [
+                0.819677, 0.646522, 0.0,
+                0.170957, 0.0, 0.0,
+                0.819677, 0.0, 0.0
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            triangleVertexPositionBuffer5.itemSize = 3;
+            triangleVertexPositionBuffer5.numItems = 3;
+            triangleVertexColorBuffer5 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexColorBuffer5);
+            var cores = [
+                0.0, 0.0, 0.5, 1.0,
+                0.0, 0.0, 0.5, 1.0,
+                0.0, 0.0, 0.5, 1.0
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cores), gl.STATIC_DRAW);
+            triangleVertexColorBuffer5.itemSize = 4;
+            triangleVertexColorBuffer5.numItems = 3;
+
+
+            triangleVertexPositionBuffer6 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer6);
+
+            //Primeiro triangulo
+            var vertices = [
+                //Frente
+                -2.2, 1.5, -1,
+                -1.2, 1.5, -1, //vertice da direita baixo
+                -1.2, 1.8, 0.2, //vertice de cima 
+
+              /*  //Direita
+                0.2, 0.0, 0.0,
+                0.2, 0.0, 0.2,
+                0.1, 0.2, 0.1,
+
+                //Trás
+                0.0, 0.0, 0.2,
+                0.2, 0.0, 0.2,
+                0.1, 0.2, 0.1,
+
+                //Esquerda
+                0.0, 0.0, 0.0,
+                0.0, 0.0, 0.2,
+                0.1, 0.2, 0.1, */
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            triangleVertexPositionBuffer6.itemSize = 3;
+            triangleVertexPositionBuffer6.numItems = 12;
+            triangleVertexColorBuffer6 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexColorBuffer6);
+            var cores = [
+                0.5, 0.5, 0.5, 1.0,
+                0.5, 0.5, 0.5, 1.0,
+                0.5, 0.5, 0.5, 1.0,
+
+                1.0, 0.57, 0.57, 1.0,
+                1.0, 0.57, 0.57, 1.0,
+                1.0, 0.57, 0.57, 1.0,
+
+                1.0, 0.57, 0.57, 1.0,
+                1.0, 0.57, 0.57, 1.0,
+                1.0, 0.57, 0.57, 1.0,
+
+                1.0, 0.57, 0.57, 1.0,
+                1.0, 0.57, 0.57, 1.0,
+                1.0, 0.507, 0.57, 1.0
+
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cores), gl.STATIC_DRAW);
+            triangleVertexColorBuffer6.itemSize = 4;
+            triangleVertexColorBuffer6.numItems = 12;
+
+
+            squareVertexPositionBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
+            //Cabeca
+            var vertices = [
+                //Frente
+                0.2, 0.971735, 0.0,
+                0.4, 1.171735, 0.0,
+                0.0, 1.171735, 0.0,
+                0.2, 1.371735, 0.0,
+
+              /*  //Trás
+                0.2, 0.971735, 0.2,
+                0.4, 1.171735, 0.2,
+                0.0, 1.171735, 0.2,
+                0.2, 1.371735, 0.2,
+                
+                //Top
+                0.2, 1.371735, 0.2,
+                0.0, 1.171735, 0.2,
+                0.2, 1.371735, 0.0,
+                0.0, 1.171735, 0.0,
+                                
+                //Base
+                0.2, 0.971735, 0.2,
+                0.4, 1.171735, 0.2,
+                0.2, 0.971735, 0.0,                
+                0.4, 1.171735, 0.0,             
+
+                //Direita
+                0.2, 1.371735, 0.2,
+                0.4, 1.171735, 0.2,
+                0.4, 1.171735, 0.0,
+                0.2, 1.371735, 0.0, 
+
+                //Esquerda
+                0.0, 1.171735, 0.0,
+                0.0, 1.171735, 0.2,
+                0.2, 0.971735, 0.2,
+                0.2, 0.971735, 0.0,
+                
+                */
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            squareVertexPositionBuffer.itemSize = 3;
+            squareVertexPositionBuffer.numItems = 24;
+            squareVertexColorBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
+            cores = []
+            for (var i = 0; i < 24; i++) {
+                cores = cores.concat([0.86, 0.07, 0.23, 1.0]);
+            }
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cores), gl.STATIC_DRAW);
+            squareVertexColorBuffer.itemSize = 4;
+            squareVertexColorBuffer.numItems = 24;
+
+
+            squareVertexPositionBuffer2 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer2);
+            //Quadrado2
+            var vertices = [
+                //Frente
+                0.0, 0.0, 0.0,
+                0.8, 0.0, 0.0,
+                0.0, 0.8, 0.0,
+                0.8, 0.8, 0.0,
+
+        /*        //Tras
+                0.0, 0.0, 0.8,
+                0.8, 0.0, 0.8,
+                0, 0.8, 0.8,
+                0, 0.8, 0.8,
+
+                //Esquerda
+                0.0, 0.0, 0.0,
+                0.0, 0.0, 0.8,
+                0.8, 0.8, 0.8,
+                0.8, 0.8, 0.0,
+
+                //Direita
+                0.8, 0.8, 0.0,
+                0.8, 0.8, 0.8,
+                0.8, 0.0, 0.8,
+                0.8, 0.0, 0.0,
+
+                //Topo
+                0.8, 0.8, 0.0,
+                0.8, 0.8, 0.8,
+                0.8, 0.8,0.8,
+                0.8, 0.8, 0.0,
+
+                //Baixo
+                0.0, 0.0, 0.0,
+                0.0, 0.0, 0.8,
+                0.8, 0.0, 0.8,
+                0.8, 0.0, 0.0,
+                */
+                
+
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            squareVertexPositionBuffer2.itemSize = 3;
+            squareVertexPositionBuffer2.numItems = 24;
+            squareVertexColorBuffer2 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer2);
+            cores = []
+            for (var i = 0; i < 24; i++) {
+                cores = cores.concat([0.2, 0.2, 0.2, 1.0]);
+            }
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cores), gl.STATIC_DRAW);
+            squareVertexColorBuffer2.itemSize = 4;
+            squareVertexColorBuffer2.numItems = 4;
+
+    
+            
+            
+            
+            squareVertexPositionBuffer3 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer3);
+            //Quadrado 2
+            var vertices = [
+                //Frente
+                0, 0.0, 0.0,
+                0.8, 0.0, 0.0,
+                0, 0.8, 0.0,
+                0.8, 0.8, 0.0,
+
+              /*  //Tras
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.466199, 0.323261, 0.2,
+
+                //Esquerda
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Direita
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+
+                //Topo
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Baixo
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+                */
+                
+                
+
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            squareVertexPositionBuffer3.itemSize = 3;
+            squareVertexPositionBuffer3.numItems = 24;
+            squareVertexColorBuffer3 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer3);
+            cores = []
+            for (var i = 0; i < 24; i++) {
+                cores = cores.concat([0.2, 0.2, 0.2, 1.0]);
+            }
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cores), gl.STATIC_DRAW);
+            squareVertexColorBuffer3.itemSize = 4;
+            squareVertexColorBuffer3.numItems = 4;
+            
+            
+            
+            
+            
+            
+            
+            squareVertexPositionBuffer4 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer4);
+            //Quadrado 4
+            var vertices = [
+                //Frente
+                0, 0.0, 0.0,
+                0.8, 0.0, 0.0,
+                0, 0.8, 0.0,
+                0.8, 0.8, 0.0,
+
+              /*  //Tras
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.466199, 0.323261, 0.2,
+
+                //Esquerda
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Direita
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+
+                //Topo
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Baixo
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+                */
+                
+                
+
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            squareVertexPositionBuffer4.itemSize = 3;
+            squareVertexPositionBuffer4.numItems = 24;
+            squareVertexColorBuffer4 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer4);
+            cores = []
+            for (var i = 0; i < 24; i++) {
+                cores = cores.concat([0.2, 0.2, 0.2, 1.0]);
+            }
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cores), gl.STATIC_DRAW);
+            squareVertexColorBuffer4.itemSize = 4;
+            squareVertexColorBuffer4.numItems = 4;
+            
+            
+            
+            
+            
+            
+            squareVertexPositionBuffer5 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer5);
+            //Quadrado 5
+            var vertices = [
+                //Frente
+                0, 0.0, 0.0,
+                0.8, 0.0, 0.0,
+                0, 0.4, 0.0,
+                0.8, 0.4, 0.0,
+
+              /*  //Tras
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.466199, 0.323261, 0.2,
+
+                //Esquerda
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Direita
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+
+                //Topo
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Baixo
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+                */
+                
+                
+
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            squareVertexPositionBuffer5.itemSize = 3;
+            squareVertexPositionBuffer5.numItems = 24;
+            squareVertexColorBuffer5 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer4);
+            cores = []
+            for (var i = 0; i < 24; i++) {
+                cores = cores.concat([0.2, 0.2, 0.2, 1.0]);
+            }
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cores), gl.STATIC_DRAW);
+            squareVertexColorBuffer5.itemSize = 4;
+            squareVertexColorBuffer5.numItems = 4;
+            
+            
+            
+            squareVertexPositionBuffer6 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer6);
+            //Quadrado 6
+            var vertices = [
+                //Frente
+                0, 0.0, 0.0,
+                0.8, 0.0, 0.0,
+                0, 0.4, 0.0,
+                0.8, 0.4, 0.0,
+
+              /*  //Tras
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.466199, 0.323261, 0.2,
+
+                //Esquerda
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Direita
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+
+                //Topo
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Baixo
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+                */              
+                
+
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            squareVertexPositionBuffer6.itemSize = 3;
+            squareVertexPositionBuffer6.numItems = 24;
+            squareVertexColorBuffer6 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer6);
+            cores = []
+            for (var i = 0; i < 24; i++) {
+                cores = cores.concat([0.2, 0.2, 0.2, 1.0]);
+            }
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cores), gl.STATIC_DRAW);
+            squareVertexColorBuffer6.itemSize = 4;
+            squareVertexColorBuffer6.numItems = 4;
+            
+            
+            
+            
+            
+            
+             
+            squareVertexPositionBuffer7 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer7);
+            //Quadrado 7
+            var vertices = [
+                //Frente
+                0, 0.0, 0.0,
+                0.8, 0.0, 0.0,
+                0, 0.8, 0.0,
+                0.8, 0.8, 0.0,
+
+              /*  //Tras
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.466199, 0.323261, 0.2,
+
+                //Esquerda
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Direita
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+
+                //Topo
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Baixo
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+                */
+                
+                
+
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            squareVertexPositionBuffer7.itemSize = 3;
+            squareVertexPositionBuffer7.numItems = 24;
+            squareVertexColorBuffer7 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
+            cores = []
+            for (var i = 0; i < 24; i++) {
+                cores = cores.concat([0.2, 0.2, 0.2, 1.0]);
+            }
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cores), gl.STATIC_DRAW);
+            squareVertexColorBuffer7.itemSize = 4;
+            squareVertexColorBuffer7.numItems = 4;
+            
+            
+             squareVertexPositionBuffer8 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer8);
+            //Quadrado 8
+            var vertices = [
+                //Frente
+                0, 0.0, 0.0,
+                0.8, 0.0, 0.0,
+                0, 0.4, 0.0,
+                0.8, 0.4, 0.0,
+
+              /*  //Tras
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.466199, 0.323261, 0.2,
+
+                //Esquerda
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Direita
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+
+                //Topo
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Baixo
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+                */              
+                
+
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            squareVertexPositionBuffer8.itemSize = 3;
+            squareVertexPositionBuffer8.numItems = 24;
+            squareVertexColorBuffer8 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer8);
+            cores = []
+            for (var i = 0; i < 24; i++) {
+                cores = cores.concat([0.2, 0.2, 0.2, 1.0]);
+            }
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cores), gl.STATIC_DRAW);
+            squareVertexColorBuffer8.itemSize = 4;
+            squareVertexColorBuffer8.numItems = 4;
+            
+            
+            
+            
+            
+            
+            
+            
+            squareVertexPositionBuffer9 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer9);
+            //Quadrado 9
+            var vertices = [
+                //Frente
+                0, 0.0, 0.0,
+                1.7, 0.0, 0.0,
+                0, 1.7, 0.0,
+                1.7, 1.7, 0.0,
+
+              /*  //Tras
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.466199, 0.323261, 0.2,
+
+                //Esquerda
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Direita
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+
+                //Topo
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Baixo
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+                */              
+                
+
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            squareVertexPositionBuffer9.itemSize = 3;
+            squareVertexPositionBuffer9.numItems = 24;
+            squareVertexColorBuffer9 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer8);
+            cores = []
+            for (var i = 0; i < 24; i++) {
+                cores = cores.concat([0.11, 0, 0.211, 1.0]);
+            }
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cores), gl.STATIC_DRAW);
+            squareVertexColorBuffer9.itemSize = 4;
+            squareVertexColorBuffer9.numItems = 4;
+            
+            
+            
+            squareVertexPositionBuffer10 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer10);
+            //Quadrado 10
+            var vertices = [
+                //Frente
+                0, 0.0, 0.0,
+                0.8, 0.0, 0.0,
+                0, 0.4, 0.0,
+                0.8, 0.4, 0.0,
+
+              /*  //Tras
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.466199, 0.323261, 0.2,
+
+                //Esquerda
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Direita
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+
+                //Topo
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Baixo
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+                */              
+                
+
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            squareVertexPositionBuffer10.itemSize = 3;
+            squareVertexPositionBuffer10.numItems = 24;
+            squareVertexColorBuffer10 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer8);
+            cores = []
+            for (var i = 0; i < 24; i++) {
+                cores = cores.concat([0.11, 0, 0.211, 1.0]);
+            }
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cores), gl.STATIC_DRAW);
+            squareVertexColorBuffer10.itemSize = 4;
+            squareVertexColorBuffer10.numItems = 4;
+            
+            
+            
+            
+            
+            squareVertexPositionBuffer11 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer11);
+            //Quadrado 11
+            var vertices = [
+                //Frente
+                0, 0.0, 0.0,
+                0.8, 0.0, 0.0,
+                0, 0.8, 0.0,
+                0.8, 0.8, 0.0,
+
+              /*  //Tras
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.466199, 0.323261, 0.2,
+
+                //Esquerda
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Direita
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+
+                //Topo
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Baixo
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+                */
+                
+                
+
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            squareVertexPositionBuffer11.itemSize = 3;
+            squareVertexPositionBuffer11.numItems = 24;
+            squareVertexColorBuffer11 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
+            cores = []
+            for (var i = 0; i < 24; i++) {
+                cores = cores.concat([0.2, 0.2, 0.2, 1.0]);
+            }
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cores), gl.STATIC_DRAW);
+            squareVertexColorBuffer11.itemSize = 4;
+            squareVertexColorBuffer11.numItems = 4;
+            
+            
+            
+           
+            
+            
+             squareVertexPositionBuffer12 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer12);
+            //Quadrado 12
+            var vertices = [
+                //Frente
+                0, 0.0, 0.0,
+                0.8, 0.0, 0.0,
+                0, 0.4, 0.0,
+                0.8, 0.4, 0.0,
+
+              /*  //Tras
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.466199, 0.323261, 0.2,
+
+                //Esquerda
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Direita
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+
+                //Topo
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Baixo
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+                */              
+                
+
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            squareVertexPositionBuffer12.itemSize = 3;
+            squareVertexPositionBuffer12.numItems = 24;
+            squareVertexColorBuffer12 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer12);
+            cores = []
+            for (var i = 0; i < 24; i++) {
+                cores = cores.concat([0.2, 0.2, 0.2, 1.0]);
+            }
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cores), gl.STATIC_DRAW);
+            squareVertexColorBuffer12.itemSize = 4;
+            squareVertexColorBuffer12.numItems = 4;
+            
+            
+            
+             squareVertexPositionBuffer13 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer13);
+            //Quadrado 11
+            var vertices = [
+                //Frente
+                0, 0.0, 0.0,
+                0.8, 0.0, 0.0,
+                0, 0.8, 0.0,
+                0.8, 0.8, 0.0,
+
+              /*  //Tras
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.466199, 0.323261, 0.2,
+
+                //Esquerda
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Direita
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+
+                //Topo
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Baixo
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+                */
+                
+                
+
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            squareVertexPositionBuffer13.itemSize = 3;
+            squareVertexPositionBuffer13.numItems = 24;
+            squareVertexColorBuffer13 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
+            cores = []
+            for (var i = 0; i < 24; i++) {
+                cores = cores.concat([0.2, 0.2, 0.2, 1.0]);
+            }
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cores), gl.STATIC_DRAW);
+            squareVertexColorBuffer13.itemSize = 4;
+            squareVertexColorBuffer13.numItems = 4;
+            
+            
+            
+            
+            
+               squareVertexPositionBuffer14 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer14);
+            //Quadrado 11
+            var vertices = [
+                //Frente
+                0, 0.0, 0.0,
+                0.8, 0.0, 0.0,
+                0, 0.8, 0.0,
+                0.8, 0.8, 0.0,
+
+              /*  //Tras
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.466199, 0.323261, 0.2,
+
+                //Esquerda
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Direita
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+
+                //Topo
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Baixo
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+                */
+                
+                
+
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            squareVertexPositionBuffer14.itemSize = 3;
+            squareVertexPositionBuffer14.numItems = 24;
+            squareVertexColorBuffer14 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
+            cores = []
+            for (var i = 0; i < 24; i++) {
+                cores = cores.concat([0.2, 0.2, 0.2, 1.0]);
+            }
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cores), gl.STATIC_DRAW);
+            squareVertexColorBuffer14.itemSize = 4;
+            squareVertexColorBuffer14.numItems = 4;
+            
+            
+            
+            
+            
+            
+             squareVertexPositionBuffer15= gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer15);
+            //Quadrado 11
+            var vertices = [
+                //Frente
+                0, 0.0, 0.0,
+                0.8, 0.0, 0.0,
+                0, 0.8, 0.0,
+                0.8, 0.8, 0.0,
+
+              /*  //Tras
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.466199, 0.323261, 0.2,
+
+                //Esquerda
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Direita
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+
+                //Topo
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Baixo
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+                */
+                
+                
+
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            squareVertexPositionBuffer15.itemSize = 3;
+            squareVertexPositionBuffer15.numItems = 24;
+            squareVertexColorBuffer15 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
+            cores = []
+            for (var i = 0; i < 24; i++) {
+                cores = cores.concat([0.2, 0.2, 0.2, 1.0]);
+            }
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cores), gl.STATIC_DRAW);
+            squareVertexColorBuffer15.itemSize = 4;
+            squareVertexColorBuffer15.numItems = 4;
+            
+            
+            
+            
+             squareVertexPositionBuffer16= gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer16);
+            //Quadrado 16
+            var vertices = [
+                //Frente
+                0, 0.0, 0.0,
+                0.8, 0.0, 0.0,
+                0, 0.4, 0.0,
+                0.8, 0.4, 0.0,
+
+              /*  //Tras
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.466199, 0.323261, 0.2,
+
+                //Esquerda
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Direita
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+
+                //Topo
+                1.466199, 0.323261, 0.0,
+                1.466199, 0.323261, 0.2,
+                1.142938, 0.323261, 0.2,
+                1.142938, 0.323261, 0.0,
+
+                //Baixo
+                0.819677, 0.0, 0.0,
+                0.819677, 0.0, 0.2,
+                1.142938, 0.0, 0.2,
+                1.142938, 0.0, 0.0,
+                */
+                
+                
+
+            ];
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            squareVertexPositionBuffer16.itemSize = 3;
+            squareVertexPositionBuffer16.numItems = 24;
+            squareVertexColorBuffer16 = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
+            cores = []
+            for (var i = 0; i < 24; i++) {
+                cores = cores.concat([0.2, 0.2, 0.2, 1.0]);
+            }
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cores), gl.STATIC_DRAW);
+            squareVertexColorBuffer16.itemSize = 4;
+            squareVertexColorBuffer16.numItems = 4;
+            
+            
+            
+        }
+
+        function iniciarAmbiente() {
+            gl.clearColor(0.0, 0.0, 0.0, 1.0);
+            gl.enable(gl.DEPTH_TEST);
+        }
+
+        function desenharCena() {
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+            mat4.perspective(pMatrix, 45, gl.viewportWidth / gl.viewportHeight, 1, 100.0);
+            mat4.identity(mMatrix);
+            mat4.identity(vMatrix);
+
+            //Desenhando Triangulo6
+
+            var translation = vec3.create();
+            vec3.set (translation, -0.5, -0.25, -4)
+            mat4.translate(mMatrix, mMatrix, translation);
+            gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer6);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, triangleVertexPositionBuffer6.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexColorBuffer6);
+            gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, triangleVertexColorBuffer6.itemSize, gl.FLOAT, false, 0, 0);
+
+            setMatrixUniforms();
+            gl.drawArrays(gl.TRIANGLES, 0, triangleVertexPositionBuffer6.numItems);
+             
+            
+            // Desenhando Triângulo
+
+            mat4.rotate(mMatrix, mMatrix, degToRad(rTriangle), [0, 0, 0]);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, triangleVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexColorBuffer);
+            gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, triangleVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+            setMatrixUniforms();
+            gl.drawArrays(gl.TRIANGLES, 0, triangleVertexPositionBuffer.numItems);
+
+            // Desenhando Triângulo2
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer2);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, triangleVertexPositionBuffer2.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexColorBuffer2);
+            gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, triangleVertexColorBuffer2.itemSize, gl.FLOAT, false, 0, 0);
+
+            setMatrixUniforms();
+            gl.drawArrays(gl.TRIANGLES, 0, triangleVertexPositionBuffer2.numItems);
+
+
+            // Desenhando Triângulo3
+            var translation = vec3.create();
+            mat4.translate(mMatrix, mMatrix, translation);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer3);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, triangleVertexPositionBuffer3.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexColorBuffer3);
+            gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, triangleVertexColorBuffer3.itemSize, gl.FLOAT, false, 0, 0);
+
+            setMatrixUniforms();
+            gl.drawArrays(gl.TRIANGLES, 0, triangleVertexPositionBuffer3.numItems);
+            
+            
+            // Desenhando o Quadrado 2
+            mPushMatrix();
+            mat4.translate(mMatrix, mMatrix, [-1.66, -1.9, 0.0]);
+            mat4.rotate(mMatrix, mMatrix, degToRad(rTriangle), [1, 0, 0]);
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer2);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer2.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer2);
+            gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexColorBuffer2.itemSize, gl.FLOAT, false, 0, 0);
+
+            setMatrixUniforms();
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer2.numItems);
+
+            mPopMatrix();
+               
+            
+             // Desenhando o Quadrado 3
+            
+            
+              mPushMatrix();
+            mat4.translate(mMatrix, mMatrix, [-1.66, -1, 0.0]);
+            mat4.rotate(mMatrix, mMatrix, degToRad(rTriangle), [1, 0, 0]);
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer3);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer3.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer2);
+            gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexColorBuffer3.itemSize, gl.FLOAT, false, 0, 0);
+
+            setMatrixUniforms();
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer3.numItems);
+
+            mPopMatrix();
+            
+            // Desenhando o Quadrado 4
+            mPushMatrix();
+            mat4.translate(mMatrix, mMatrix, [-1.66, -0.1, 0.0]);
+            mat4.rotate(mMatrix, mMatrix, degToRad(rTriangle), [1, 0, 0]);
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer4);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer4.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer2);
+            gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexColorBuffer4.itemSize, gl.FLOAT, false, 0, 0);
+
+            setMatrixUniforms();
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer4.numItems);
+
+            mPopMatrix();
+           
+              // Desenhando o Quadrado 5
+            mPushMatrix();
+            mat4.translate(mMatrix, mMatrix, [-1.66, 0.8, 0.0]);
+            mat4.rotate(mMatrix, mMatrix, degToRad(rTriangle), [1, 0, 0]);
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer5);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer5.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer2);
+            gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexColorBuffer5.itemSize, gl.FLOAT, false, 0, 0);
+
+            setMatrixUniforms();
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer5.numItems);
+
+            mPopMatrix();
+           
+            
+             // Desenhando o Quadrado 6
+            mPushMatrix();
+            mat4.translate(mMatrix, mMatrix, [-0.7, 1.35, 0.0]);
+            mat4.rotate(mMatrix, mMatrix, degToRad(rTriangle), [1, 0, 0]);
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer6);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer6.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer2);
+            gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexColorBuffer6.itemSize, gl.FLOAT, false, 0, 0);
+
+            setMatrixUniforms();
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer6.numItems);
+
+            mPopMatrix();
+           
+            // Desenhando o Quadrado 7
+            mPushMatrix();
+            mat4.translate(mMatrix, mMatrix, [-0.7, 0.45, 0.0]);
+            mat4.rotate(mMatrix, mMatrix, degToRad(rTriangle), [1, 0, 0]);
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer7);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer7.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer2);
+            gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexColorBuffer7.itemSize, gl.FLOAT, false, 0, 0);
+
+            setMatrixUniforms();
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer7.numItems);
+
+            mPopMatrix();
+            
+            // Desenhando o Quadrado 8
+            mPushMatrix();
+            mat4.translate(mMatrix, mMatrix, [-0.7, -0.08, 0.0]);
+            mat4.rotate(mMatrix, mMatrix, degToRad(rTriangle), [1, 0, 0]);
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer8);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer8.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer2);
+            gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexColorBuffer7.itemSize, gl.FLOAT, false, 0, 0);
+
+            setMatrixUniforms();
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer7.numItems);
+
+            mPopMatrix();
+            
+            
+             // Desenhando o Quadrado 9 
+            mPushMatrix();
+            mat4.translate(mMatrix, mMatrix, [-0.7, -1.9, 0.0]);
+            mat4.rotate(mMatrix, mMatrix, degToRad(rTriangle), [1, 0, 0]);
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer9);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer9.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer10);
+            gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexColorBuffer9.itemSize, gl.FLOAT, false, 0, 0);
+
+            setMatrixUniforms();
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer9.numItems);
+
+            mPopMatrix();
+            
+            
+             // Desenhando o Quadrado 10 
+            mPushMatrix();
+            mat4.translate(mMatrix, mMatrix, [0.2, -0.08, 0.0]);
+            mat4.rotate(mMatrix, mMatrix, degToRad(rTriangle), [1, 0, 0]);
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer10);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer10.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer2);
+            gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexColorBuffer10.itemSize, gl.FLOAT, false, 0, 0);
+
+            setMatrixUniforms();
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer10.numItems);
+
+            mPopMatrix();
+            
+            // Desenhando o Quadrado 11 
+            mPushMatrix();
+            mat4.translate(mMatrix, mMatrix, [0.2, 0.44, 0.0]);
+            mat4.rotate(mMatrix, mMatrix, degToRad(rTriangle), [1, 0, 0]);
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer11);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer11.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer2);
+            gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexColorBuffer11.itemSize, gl.FLOAT, false, 0, 0);
+
+            setMatrixUniforms();
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer11.numItems);
+
+            mPopMatrix();
+            
+            
+            // Desenhando o Quadrado 12
+            mPushMatrix();
+            mat4.translate(mMatrix, mMatrix, [1.1, 1.35, 0.0]);
+            mat4.rotate(mMatrix, mMatrix, degToRad(rTriangle), [1, 0, 0]);
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer12);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer12.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer2);
+            gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexColorBuffer6.itemSize, gl.FLOAT, false, 0, 0);
+
+            setMatrixUniforms();
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer12.numItems);
+
+            mPopMatrix();
+            
+            
+            
+            // Desenhando o Quadrado 13 
+            mPushMatrix();
+            mat4.translate(mMatrix, mMatrix, [1.1, 0.44, 0.0]);
+            mat4.rotate(mMatrix, mMatrix, degToRad(rTriangle), [1, 0, 0]);
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer13);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer13.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer2);
+            gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexColorBuffer13.itemSize, gl.FLOAT, false, 0, 0);
+
+            setMatrixUniforms();
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer13.numItems);
+
+            mPopMatrix();
+            
+            // Desenhando o Quadrado 14 
+            mPushMatrix();
+            mat4.translate(mMatrix, mMatrix, [1.1, -0.48, 0.0]);
+            mat4.rotate(mMatrix, mMatrix, degToRad(rTriangle), [1, 0, 0]);
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer14);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer14.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer2);
+            gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexColorBuffer14.itemSize, gl.FLOAT, false, 0, 0);
+
+            setMatrixUniforms();
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer14.numItems);
+
+            mPopMatrix();
+            
+            
+            // Desenhando o Quadrado 15
+            mPushMatrix();
+            mat4.translate(mMatrix, mMatrix, [1.1, -1.40, 0.0]);
+            mat4.rotate(mMatrix, mMatrix, degToRad(rTriangle), [1, 0, 0]);
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer15);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer15.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer3);
+            gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexColorBuffer15.itemSize, gl.FLOAT, false, 0, 0);
+
+            setMatrixUniforms();
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer15.numItems);
+
+            mPopMatrix();
+            
+            
+            // Desenhando o Quadrado 16
+            mPushMatrix();
+            mat4.translate(mMatrix, mMatrix, [1.1, -1.9, 0.0]);
+            mat4.rotate(mMatrix, mMatrix, degToRad(rTriangle), [1, 0, 0]);
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer16);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer14.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer3);
+            gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexColorBuffer16.itemSize, gl.FLOAT, false, 0, 0);
+
+            setMatrixUniforms();
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer16.numItems);
+
+            mPopMatrix();
+            
+        
+            
+            
+        }
+
+        var ultimo = 0;
+        function animar() {
+            var agora = new Date().getTime();
+            if (ultimo != 0) {
+                var diferenca = agora - ultimo;
+                //rTriangle += ((90 * diferenca) / 1000.0) % 360.0;
+                //rTriangle2 += ((90 * diferenca) / 1000.0) % 360.0;
+                //rSquare10 += ((90 * diferenca) / 1000.0) % 360.0;
+            }
+            ultimo = agora;
+        }
+
+        function setMatrixUniforms() {
+            gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
+            gl.uniformMatrix4fv(shaderProgram.vMatrixUniform, false, vMatrix);
+            gl.uniformMatrix4fv(shaderProgram.mMatrixUniform, false, mMatrix);
+        }
+    </script>
+</head>
+
+<body>
+    <canvas id="canvas-webgl" width="500px" height="500px" style="border:none">
+    </canvas>
+</body>
+
+</html>
