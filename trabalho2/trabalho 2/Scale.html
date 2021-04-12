@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+  </head>
+    
+    
+    
+  <body>
+    <a-scene>
+        <a-assets>
+            <img id="marmore-NRM" src="Imagens/marmore.jpg">
+            <img id="marmore" src="Imagens/marmore.jpg">
+            <img id="espaco-NRM" src="Imagens/espaco2.jpg">
+            <img id="ceuEnsolarado" src="Imagens/Ceu_ensolarado.png"  >           
+        
+        </a-assets>
+        
+      
+              <!--caixa de Vidro-->
+         <a-plane src="#marmore" shader="flat" rotation="-90 0 0" scale= "10 10 1">
+        </a-plane>
+        
+        <a-entity position="0 0 0" progressive-controls position 0 0 5>
+            <a-camera user-height="0.5"
+                      position="-4.7 0 5"></a-camera>
+            
+            <a-sky src="#ceuEnsolarado"
+               rotation="0 300 0" ></a-sky>
+            
+    
+        </a-entity>
+          <!--Parede lateral esquerda-->
+        <a-box color="ffffff"
+               src="Imagens/parede.jpg"
+               position="-4.95 2.5 0"
+               rotation="0 90 0"
+               depth="0.1"
+               scale="10 5 1"
+               static-body
+               ></a-box>
+         <!--Parede meio-->
+         <a-box color="ffffff"
+               src="Imagens/parede.jpg"
+               position="-2.5 2.5 0"
+               rotation="0 0 0"
+               depth="0.1"
+               scale="10 5 1"
+                static-body
+               ></a-box>
+        
+             <!--Parede fundo-->
+         <a-box color="ffffff"
+               src="Imagens/parede.jpg"
+               position="0 2.5 -4.95"
+               rotation="0 0 0"
+               depth="0.1"
+               scale="10 5 1"
+                static-body
+               ></a-box>
+        
+        <!--Parede lateral direita-->
+         <a-box color="ffffff"
+               src="Imagens/parede.jpg"
+               position="4.95 2.5 0"
+               rotation="0 90 0"
+                depth="0.1"
+               scale="10 5 1"
+               ></a-box>
+        
+        <!--moeda-->
+        <a-circle color="ffffff"
+                     src="Imagens/moeda.png"
+                    position="-4.3 0.5 3"
+                    rotation="0 0 0"
+                    side="double"
+                    width="2"
+                    radius="0.5">
+                   
+
+                    <a-circle color="ffffff"
+                             src="Imagens/moeda.png"
+                            position="0 0 -1"
+                            rotation="0 0 0"
+                           radius="0.5">
+                           <a-animation attribute="rotation"
+                                to= "0 360 0"
+                                 repeat="indefinite"
+                                 dur="1000">
+                            </a-animation>
+                        
+                        
+                    </a-circle>
+                    <a-circle color="ffffff"
+                             src="Imagens/moeda.png"
+                            position="0 0 -2"
+                            rotation="0 0 0"
+                            radius="0.5"
+                            >
+                           <a-animation attribute="rotation"
+                                to= "0 360 0"
+                                 repeat="indefinite"
+                                 dur="1000">
+                            </a-animation>
+
+                </a-circle>
+                    
+        
+        </a-circle> 
+        
+     </a-scene>
+  </body>
+</html>uhuuu
