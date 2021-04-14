@@ -1,135 +1,95 @@
-
 <html>
-  <head>
-      <script src="https://aframe.io/releases/1.0.3/aframe.min.js"></script>
-      <script src="extras/dist/aframe-extras.js"></script>
-       <script src="https://cdn.jsdelivr.net/gh/n5ro/aframe-physics-system@v4.0.1/dist/aframe-physics-system.min.js"></script>
-      <script src="https://unpkg.com/aframe-event-set-component@4.2.1/dist/aframe-event-set-component.min.js"></script>
-  </head>
-   
+
+<head>
+  <script src="https://aframe.io/releases/1.0.3/aframe.min.js"></script>
+  <script src="extras/dist/aframe-extras.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/gh/n5ro/aframe-physics-system@v4.0.1/dist/aframe-physics-system.min.js"></script>
+  <script src="https://unpkg.com/aframe-event-set-component@4.2.1/dist/aframe-event-set-component.min.js"></script>
+</head>
+
+<body class="a-body">
+
+  <a-scene inspector-plugin-recast>
+    <canvas class="a-canvas" data-aframe-canvas="true" width="2000" height="2000"></canvas>
+    <a-entity id="walkmesh" class="navmesh" gltf-model="navmesh.gltf" position="0 0 0" scale="2000 2000 2000" nav-mesh
+      visible=true></a-entity>
+
+
+    <a-entity id="rig" movement-controls="controls: keyboard, adAxis-blocked, touch; speed:3; constrainToNavMesh: true;"
+      position="-80 0 88" kinematic-body>
+      <a-entity id="head" position="0 5 0" camera="UserHeight: 1.6 " look-controls universal-controls>
+        <a-cursor
+          animation__click="property: scale; startEvents: click; easing:easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
+          animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1500; from: 1 1 1; to: 0.1 0.1 0.1"
+          animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1"
+          cursor="fuse: true;" material="color: black; shader: flat" position="0 0 -3" geometry="primitive: ring"
+          raycaster="objects: .clickable"></a-cursor>
+
+      </a-entity>
+
+      <a-sky src="#ceuEnsolarado" rotation="0 300 0"></a-sky>
+
+    </a-entity>
+
+    <a-assets>
+      <img id="marmore-NRM" src="Imagens/marmore.jpg">
+      <img id="marmore" src="Imagens/marmore.jpg">
+      <img id="espaco-NRM" src="Imagens/espaco2.jpg">
+      <img id="ceuEnsolarado" src="Imagens/Ceu_ensolarado.png">
+      <audio id="moeda" src="Sons/moeda.mp3"></audio>
+
+    </a-assets>
+    <!--chão-->
+    <a-plane src="#marmore" shader="flat" rotation="-90 0 0" scale="200 200 1" static-body>
+    </a-plane>
+
+    <!--parede lateral direita-->
+    <a-box color="white" src="Imagens/parede.jpg" widht="9" height="200" depth="200" position="95 0 0" static-body></a-box>
+    <!--parede lateral direita interna-->
+    <a-box color="white" src="Imagens/parede.jpg" widht="1" height="200" depth="150" position="70 0 0" static-body></a-box>
+    <!--parede lateral esquerda-->
+    <a-box color="white" src="Imagens/parede.jpg" widht="9" height="200" depth="200" position="-95 0 0" static-body></a-box>
+    <!--parede lateral esquerda interna-->
+    <a-box color="white" src="Imagens/parede.jpg" widht="9" height="200" depth="150" position="-70 0 0" static-body></a-box>
+    <!--parede frente-->
+    <a-box color="white" src="Imagens/parede.jpg" widht="9" height="200" depth="200" rotation="0 90 0" position="0 0 -95" static-body></a-box>
+    <!--parede frente interna-->
+    <a-box color="white" src="Imagens/parede.jpg" widht="9" height="200" depth="150" rotation="0 90 0" position="0 0 -70" static-body></a-box>
     
-    
-  <body class="a-body">
-      
-    <a-scene inspector-plugin-recast>
-        <canvas class ="a-canvas" data-aframe-canvas="true" width="2000" height="2000"></canvas>
-        <a-entity id="walkmesh" class="navmesh" gltf-model="navmesh.gltf" position="0 0 0" scale="2000 2000 2000" nav-mesh visible=true></a-entity>
-        
-        
-        <a-entity id="rig" movement-controls="controls: keyboard, adAxis-blocked, touch; speed:3; constrainToNavMesh: true;" position= "-80 0 88" kinematic-body>
-            <a-entity id="head" position="0 5 0" camera="UserHeight: 1.6 " look-controls universal-controls>
-            <a-cursor animation__click="property: scale; startEvents: click; easing:easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
-                      animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1500; from: 1 1 1; to: 0.1 0.1 0.1"
-                      animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1"
-                      cursor="fuse: true;"
-                      material="color: black; shader: flat"
-                      position="0 0 -3"
-                      geometry="primitive: ring"
-                      raycaster="objects: .clickable"></a-cursor>
-            
-            </a-entity>
-            
-      
-            
-              
-            
-               <a-sky src="#ceuEnsolarado"
-               rotation="0 300 0" ></a-sky>
-            
-        </a-entity>
-        
-        <a-assets>
-            <img id="marmore-NRM" src="Imagens/marmore.jpg">
-            <img id="marmore" src="Imagens/marmore.jpg">
-            <img id="espaco-NRM" src="Imagens/espaco2.jpg">
-            <img id="ceuEnsolarado" src="Imagens/Ceu_ensolarado.png"  >           
-            <audio id="moeda" src="Sons/moeda.mp3"></audio>
-         
-        </a-assets>
-          <!--chão-->
-            <a-plane src="#marmore" shader="flat" rotation="-90 0 0" scale= "200 200 1"  static-body>
-        </a-plane>
-        
-           
-        <!--parede lateral direita-->
-         <a-box color="white"
-                src="Imagens/parede.jpg"
-                  widht="9" height="200" depth="200"
-                  position="95 0 0"
-                 static-body
-                
-                >
-        </a-box>
-        
-        <!--parede lateral esquerda-->
-         <a-box color="white"
-                src="Imagens/parede.jpg"
-                  widht="9" height="200" depth="200"
-                  position="-95 0 0"
-                 static-body
-                >
-        </a-box> 
-        
-        <!--parede fundo-->
-         <a-box color="white"
-                src="Imagens/parede.jpg"
-                  widht="9" height="200" depth="200"
-                rotation="0 90 0"
-                  position="0 0 -95"
-                 static-body
-                >
-        </a-box>
-        <!--parede meio-->
-         <a-box color="white"
-                src="Imagens/parede.jpg"
-                  widht="9" height="200" depth="200"
-                rotation="0 90 0"
-                  position="-40 0 0"
-                 static-body
-                >
-        </a-box>
-        
-        <!--parede lateral central divisão-->
-         <a-box color="white"
-                src="Imagens/parede.jpg"
-                  widht="9" height="200" depth="200"
-                  position="0 0 120"
-                 static-body
-                
-                >
-        </a-box>
-        
-        <!--parede inicio-->
-         <a-box color="white"
-                src="Imagens/parede.jpg"
-                  widht="9" height="200" depth="200"
-                rotation="0 90 0"
-                  position="0 0 95"
-                 static-body
-                >
-        </a-box>
-        
-         <!--moeda--><!--moeda--><!--moeda--><!--moeda--><!--moeda--><!--moeda--><!--moeda--><!--moeda--><!--moeda--><!--moeda--><!--moeda--><!--moeda--><!--moeda--><!--moeda--><!--moeda--><!--moeda--><!--moeda-->
-        <a-cylinder id="coin" color="ffffff"
-                     src="Imagens/moeda.png"
-                    position="-80 5 80"
-                    rotation="90 0 0"
-                    side="double"
-                    scale="1 1 1"
-                    width="2"
-                    radius="5"
-                    sound="src: #moeda;
-                            on: click;"
-                 
-                 
-                  event-set__click="scale: 2 2 2"
-                    
-                     dynamic-body
-                    >
-        
-        </a-cylinder>
-        
-          
+    <!--parede fundos-->
+    <a-box color="white" src="Imagens/parede.jpg" widht="9" height="200" depth="200" rotation="0 90 0" position="0 0 95"
+      static-body>
+    </a-box>
+    <!--parede fundos interna-->
+    <a-box color="white" src="Imagens/parede.jpg" widht="9" height="200" depth="150" rotation="0 90 0" position="0 0 70"
+      static-body>
+    </a-box>
+
+    <!--moeda-->
+    <!--moeda-->
+    <!--moeda-->
+    <!--moeda-->
+    <!--moeda-->
+    <!--moeda-->
+    <!--moeda-->
+    <!--moeda-->
+    <!--moeda-->
+    <!--moeda-->
+    <!--moeda-->
+    <!--moeda-->
+    <!--moeda-->
+    <!--moeda-->
+    <!--moeda-->
+    <!--moeda-->
+    <!--moeda-->
+    <a-cylinder id="coin" color="ffffff" src="Imagens/moeda.png" position="-80 5 80" rotation="90 0 0" side="double"
+      scale="1 1 1" width="2" radius="5" sound="src: #moeda;
+                            on: click;" event-set__click="scale: 2 2 2" dynamic-body>
+
+    </a-cylinder>
+
+    <!--           
       <a-cylinder color="ffffff"
                      src="Imagens/moeda.png"
                     position="-80 5 70"
@@ -154,11 +114,8 @@
                    radius="5"
                   
                   dynamic-body>
-            
-                
-        
-        </a-cylinder>
-        
+        </a-cylinder> -->
+    <!--         
          <a-cylinder color="ffffff"
                      src="Imagens/moeda.png"
                     position="-80 5 50"
@@ -551,6 +508,7 @@
                   dynamic-body>
                         
         </a-cylinder>
-     </a-scene>
-  </body>
+     </a-scene> -->
+</body>
+
 </html>
